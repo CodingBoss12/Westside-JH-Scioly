@@ -72,6 +72,30 @@
       padding: 0 2rem;
       z-index: 1;
     }
+
+    .slideshow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      filter: brightness(0.35);
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
     .countdown {
         text-align: center;
         padding: 2rem;
@@ -87,14 +111,7 @@
     }
 
     /* Dark overlay on background image */
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('images/team.jpg') center/cover no-repeat;
-      filter: brightness(0.35);
-      z-index: -2;
-    }
+    
 
     /* Gradient overlay for subtle ombre feel */
     .hero::after {
@@ -342,7 +359,12 @@
 
 
   <section class="hero">
-    <img src= "images/logo.png" alt="Westside SciOly Logo" class="logo" />
+    <div class="slideshow">
+        <img src="images/team.jpg" class="slide active">
+        <img src="images/team2.jpg" class="slide">
+        <img src="images/team3.jpg" class="slide">
+    </div>
+    <img src="images/logo.png" alt="Westside SciOly Logo" class="logo" />
     <h1>Welcome to Westside Jh SciOly</h1>
     <!-- Placeholder for dynamic login message -->
     <!-- If logged in, replace with "Hey, Anahita! Ready to crush it?" -->
@@ -352,10 +374,10 @@
 
   <section class="announcements">
     <h2>Recent Announcements & Wins</h2>
-    <div class="announcement-item">Important Dates: February 21st(Regionals) and March 28th(State)</div>
-    <div class="announcement-item">Regionals @ Butler University</div>
+    <div class="announcement-item">Important Dates: March 28th(State)</div>
+    <div class="announcement-item">We placed 6th at Regionals! Advancing to State!</div>
     <div class="announcement-item">State @ North Ridge High School</div>
-    <div class="announcement-item">Next meeting: October 5th, 2-4pm</div>
+    <div class="announcement-item">Next meeting: March 1st, 2-4pm</div>
     <div class="announcement-item">Website designed/coded by Anahita</div>
   </section>
 
@@ -465,6 +487,18 @@
     document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
     document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
   }, 1000);
+
+  const slides = document.querySelectorAll(".slide");
+  let currentSlide = 0;
+
+  function showNextSlide() {
+    slides[currentSlide].classList.remove("active");
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add("active");
+  }
+
+  setInterval(showNextSlide, 4000); // changes every 4 seconds
+
   </script>
 </body>
 </html>
