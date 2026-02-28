@@ -341,28 +341,6 @@
       header.site-header .nav-list li a { font-size: 0.95rem; padding: 0.5rem 0; }
     }
 
-    .dots {
-      position: absolute;
-      bottom: 20px;
-      display: flex;
-      gap: 10px;
-      z-index: 2;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .dot.active {
-      background: var(--hover-gold);
-      transform: scale(1.2);
-    }
-
 </style>
   <!-- Fonts from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins&display=swap" rel="stylesheet" />
@@ -395,15 +373,9 @@
         <img src="images/team1.jpg" class="slide">
         <img src="images/team2.jpg" class="slide">
         <img src="images/team3.jpg" class="slide">
-        <div class="dots">
-          <span class="dot active"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
     </div>
     <img src="images/logo.png" alt="Westside SciOly Logo" class="logo" />
-    <h1>Welcome to Westside JH SciOly</h1>
+    <h1>Welcome to Westside Jh SciOly</h1>
     <!-- Placeholder for dynamic login message -->
     <!-- If logged in, replace with "Hey, Anahita! Ready to crush it?" -->
     <p><a href="https://www.soinc.org/sites/default/files/uploaded_files/Science_Olympiad_Div_B_Rules_2026_for_Web_Secured.pdf" target="_blank" class="rules-link">RULES ARE OUT</a></p>
@@ -533,80 +505,25 @@
     "images/team3.jpg"
   ];
 
-  imageSources.forEach(src=> {
-    const img = new Image();
-    img.src = src;
-  })
-
+  // Wait until all images are loaded before starting slideshow
   const slides = document.querySelectorAll(".slide");
-  const dotsContainer = document.querySelector(".dots");
-
   let currentSlide = 0;
-  let interval;
 
-  // create dots
-  slides.forEach((_, i) => {
-    const dot = document.createElement("div");
-    dot.classList.add("dot");
-    if (i === 0) dot.classList.add("active");
-
-    dot.addEventListener("click", () => {
-      goToSlide(i);
-    });
-
-    dotsContainer.appendChild(dot);
-  });
-
-  const dots = document.querySelectorAll(".dot");
-
-  function goToSlide(index) {
+  function showNextSlide() {
     slides[currentSlide].classList.remove("active");
-    dots[currentSlide].classList.remove("active");
 
-    currentSlide = index;
+    currentSlide++;
+    if (currentSlide >= slides.length) {
+      currentSlide = 0;
+    }
 
     slides[currentSlide].classList.add("active");
-    dots[currentSlide].classList.add("active");
-  }
+}
 
-  function nextSlide() {
-    let next = (currentSlide + 1) % slides.length;
-    goToSlide(next);
-  }
-
-  // autoplay
-  function startSlideshow() {
-    interval = setInterval(nextSlide, 5000);
-  }
-
-  function stopSlideshow() {
-    clearInterval(interval);
-  }
-
-  // pause on hover
-  const hero = document.querySelector(".hero");
-  hero.addEventListener("mouseenter", stopSlideshow);
-  hero.addEventListener("mouseleave", startSlideshow);
-
-  window.addEventListener("load", startSlideshow);
-
-  let startX = 0;
-
-  hero.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
-
-  hero.addEventListener("touchend", (e) => {
-    let endX = e.changedTouches[0].clientX;
-
-    if (startX - endX > 50) {
-      nextSlide(); // swipe left
-    } else if (endX - startX > 50) {
-      let prev = (currentSlide - 1 + slides.length) % slides.length;
-      goToSlide(prev); // swipe right
-    }
-  });
-
+// wait until EVERYTHING loads first
+window.addEventListener("load", () => {
+  setInterval(showNextSlide, 4000);
+});
   </script>
 </body>
 </html>
