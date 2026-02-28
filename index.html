@@ -98,6 +98,8 @@
 
     .slide.active {
       opacity: 1;
+      transform: scale(1.05);
+      transition: opacity 1s ease-in-out, transform 5s ease-in-out;
     }
 
     .countdown {
@@ -494,6 +496,8 @@
 
   const slides = document.querySelectorAll(".slide");
   let currentSlide = 0;
+
+  setInterval(showNextSlide, 3000); // changes every 3 seconds
 
   function showNextSlide() {
     slides[currentSlide].classList.remove("active");
