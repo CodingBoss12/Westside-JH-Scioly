@@ -499,6 +499,9 @@
     slides[currentSlide].classList.remove("active");
     currentSlide = (currentSlide + 1) % slides.length;
     slides[currentSlide].classList.add("active");
+    do {
+      currentSlide = (currentSlide + 1) % slides.length;
+    } while (!slides[currentSlide].complete); // skip if image not loaded
   }
 
   setInterval(showNextSlide, 4000); // changes every 4 seconds
