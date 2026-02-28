@@ -91,15 +91,17 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
+
       opacity: 0;
-      transition: opacity 1s ease-in-out;
+      transform: scale(1.1); /* start slightly zoomed in */
+      transition: opacity 1.2s ease-in-out, transform 6s ease-in-out;
+
       filter: brightness(0.35);
     }
 
     .slide.active {
       opacity: 1;
-      transform: scale(1.05);
-      transition: opacity 1s ease-in-out, transform 5s ease-in-out;
+      transform: scale(1); /* slowly zoom out */
       z-index: 1;
     }
 
@@ -339,6 +341,28 @@
       header.site-header .nav-list li a { font-size: 0.95rem; padding: 0.5rem 0; }
     }
 
+    .dots {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background: var(--hover-gold);
+      transform: scale(1.2);
+    }
+
 </style>
   <!-- Fonts from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins&display=swap" rel="stylesheet" />
@@ -347,7 +371,7 @@
   <header class="site-header">
     <div class="site-title">
       <!-- you can swap this text for <img class="logo" src="images/logo.png"> if you prefer the logo -->
-      Westside SciOly
+      Westside JH SciOly
     </div>
 
     <nav>
@@ -371,9 +395,15 @@
         <img src="images/team1.jpg" class="slide">
         <img src="images/team2.jpg" class="slide">
         <img src="images/team3.jpg" class="slide">
+        <div class="dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
     </div>
     <img src="images/logo.png" alt="Westside SciOly Logo" class="logo" />
-    <h1>Welcome to Westside Jh SciOly</h1>
+    <h1>Welcome to Westside JH SciOly</h1>
     <!-- Placeholder for dynamic login message -->
     <!-- If logged in, replace with "Hey, Anahita! Ready to crush it?" -->
     <p><a href="https://www.soinc.org/sites/default/files/uploaded_files/Science_Olympiad_Div_B_Rules_2026_for_Web_Secured.pdf" target="_blank" class="rules-link">RULES ARE OUT</a></p>
@@ -503,25 +533,80 @@
     "images/team3.jpg"
   ];
 
-  // Wait until all images are loaded before starting slideshow
+  imageSources.forEach(src=> {
+    const img = new Image();
+    img.src = src;
+  })
+
   const slides = document.querySelectorAll(".slide");
+  const dotsContainer = document.querySelector(".dots");
+
   let currentSlide = 0;
+  let interval;
 
-  function showNextSlide() {
+  // create dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    if (i === 0) dot.classList.add("active");
+
+    dot.addEventListener("click", () => {
+      goToSlide(i);
+    });
+
+    dotsContainer.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll(".dot");
+
+  function goToSlide(index) {
     slides[currentSlide].classList.remove("active");
+    dots[currentSlide].classList.remove("active");
 
-    currentSlide++;
-    if (currentSlide >= slides.length) {
-      currentSlide = 0;
-    }
+    currentSlide = index;
 
     slides[currentSlide].classList.add("active");
-}
+    dots[currentSlide].classList.add("active");
+  }
 
-// wait until EVERYTHING loads first
-window.addEventListener("load", () => {
-  setInterval(showNextSlide, 4000);
-});
+  function nextSlide() {
+    let next = (currentSlide + 1) % slides.length;
+    goToSlide(next);
+  }
+
+  // autoplay
+  function startSlideshow() {
+    interval = setInterval(nextSlide, 5000);
+  }
+
+  function stopSlideshow() {
+    clearInterval(interval);
+  }
+
+  // pause on hover
+  const hero = document.querySelector(".hero");
+  hero.addEventListener("mouseenter", stopSlideshow);
+  hero.addEventListener("mouseleave", startSlideshow);
+
+  window.addEventListener("load", startSlideshow);
+
+  let startX = 0;
+
+  hero.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  hero.addEventListener("touchend", (e) => {
+    let endX = e.changedTouches[0].clientX;
+
+    if (startX - endX > 50) {
+      nextSlide(); // swipe left
+    } else if (endX - startX > 50) {
+      let prev = (currentSlide - 1 + slides.length) % slides.length;
+      goToSlide(prev); // swipe right
+    }
+  });
+
   </script>
 </body>
 </html>
