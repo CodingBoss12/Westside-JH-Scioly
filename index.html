@@ -100,6 +100,7 @@
       opacity: 1;
       transform: scale(1.05);
       transition: opacity 1s ease-in-out, transform 5s ease-in-out;
+      z-index: 1;
     }
 
     .countdown {
@@ -495,22 +496,32 @@
     document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
   }, 1000);
 
+  const imageSources = [
+    "images/team.jpg",
+    "images/team1.jpg",
+    "images/team2.jpg",
+    "images/team3.jpg"
+  ];
+
+  // Wait until all images are loaded before starting slideshow
   const slides = document.querySelectorAll(".slide");
   let currentSlide = 0;
 
-  setInterval(showNextSlide, 3000); // changes every 3 seconds
-
   function showNextSlide() {
     slides[currentSlide].classList.remove("active");
-    currentSlide = (currentSlide + 1) % slides.length;
+
+    currentSlide++;
+    if (currentSlide >= slides.length) {
+      currentSlide = 0;
+    }
+
     slides[currentSlide].classList.add("active");
-    do {
-      currentSlide = (currentSlide + 1) % slides.length;
-    } while (!slides[currentSlide].complete); // skip if image not loaded
-  }
+}
 
-  setInterval(showNextSlide, 4000); // changes every 4 seconds
-
+// wait until EVERYTHING loads first
+window.addEventListener("load", () => {
+  setInterval(showNextSlide, 4000);
+});
   </script>
 </body>
 </html>
